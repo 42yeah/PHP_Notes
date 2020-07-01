@@ -1,0 +1,173 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+strong {
+    color: #ff7300;
+    font-weight: bolder;
+}
+
+.container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header {
+    font-size: 2em;
+}
+
+.cool-input {
+    border: 0;
+    border-bottom: 2px solid #777;
+    font-size: 1em;
+    margin-top: 1em;
+    min-width: 30vw;
+}
+
+.cool-input:hover {
+    border-bottom: 2px solid black;
+}
+
+.cool-button {
+    margin-top: 1em;
+    border: 0;
+    background: 0;
+    border: 2px solid #ff7300;
+    padding: 0.5em 2em;
+    font-weight: bold;
+    color: #333;
+    border-radius: 1px;
+    text-decoration: none;
+    font-size: 1em;
+    display: block;
+}
+
+.cool-button:hover {
+    background-color: #ff7300;
+    color: white;
+}
+
+.alerts {
+    border: 2px solid rgb(143, 42, 31);
+    color: rgb(170, 54, 41);
+    padding: 1em;
+    margin-bottom: 2em;
+}
+
+.alerts:hover {
+    background-color: rgb(107, 19, 10);
+    color: white;
+    user-select: none;
+}
+
+.cool-link {
+    border-bottom: 2px solid #ff7300;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;;
+}
+
+.mt-1 {
+    margin-top: 1rem;
+}
+
+.hidden {
+    display: none;
+}
+
+.banner {
+    color: black;
+    font-weight: bolder;
+    display: block;
+    text-decoration: none;
+    margin-bottom: 1em;
+    padding: 1em;
+}
+
+.banner-link {
+    color: black;
+    text-decoration: none;
+}
+
+.d-flex {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.fill {
+    flex-grow: 100;
+    display: flex;
+}
+
+.sidebar {
+    width: 20%;
+    border-right: 1px dashed #aaa;
+}
+
+.note-content {
+    flex-grow: 100;
+    background-image: url(/assets/paper.png);
+    background-repeat: repeat;
+}
+
+.legend {
+    color: black;
+    font-weight: bolder;
+    font-size: 0.9em;
+    padding: 1em;
+}
+
+.float-right {
+    float: right;
+}
+
+.round-button {
+    border-radius: 100%;
+    display: block;
+    transition: 0.3s all cubic-bezier(0.23, 1, 0.320, 1);
+    width: 0.5em;
+    height: 0.5em;
+    margin-top: -0.5em;
+    cursor: pointer;
+    color: #777;
+    padding: 1em;
+    position: relative;
+}
+
+.round-button:before {
+    content: "+";
+    position: absolute;
+    left: 39%;
+    top: 25%;
+}
+
+.round-button:hover {
+    background-color: #33333333;
+}
+
+.note-title {
+    color: #989898;
+    cursor: pointer;
+    user-select: none;
+    margin: 0.1em 0 0.1em 0;
+    padding: 0.5em;
+    margin-right: 1em;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    transition: 0.3s all cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.note-title:not(.selected):hover {
+    background: #33333311;
+}
+
+.note-title.selected {
+    background: #33333322;
+    color: black;
+    font-weight: bold;
+}
