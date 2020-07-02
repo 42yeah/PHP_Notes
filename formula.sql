@@ -8,5 +8,5 @@ CREATE TABLE notes (
 CREATE TABLE note_content (
     id INT AUTO_INCREMENT PRIMARY KEY,
     note INT NOT NULL,
-    data BLOB
+    data LONGBLOB
 );

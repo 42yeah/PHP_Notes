@@ -28,6 +28,10 @@ if (!hasLoggedIn()) {
                 <div class="banner">
                     <a class="banner-link" href="href="/dashboard.php">Notes | <strong>笔记管理</strong></a>
                 </div>
+                <div class="legend">
+                    <?php renderAlerts(); ?>
+                    你好，<?php echo $_SESSION["username"]; ?>！<a href="javascript:logOut();" class="cool-link">登出</a>
+                </div>
                 <div class="legend">新增笔记<a href="javascript:addNote()" class="float-right round-button"></a></div>
                 <div id="note-model" class="note-elem hidden model">model</div>
                 <div class="note-list">
@@ -35,9 +39,18 @@ if (!hasLoggedIn()) {
             </div>
             <div class="note-content-wrapper">
                 <div class="note-content">
-                    <div class="padding">
+                    <div class="missing">
+                        <div class="missing-content">
+                            选中笔记以开始编辑
+                        </div>
+                    </div>
+                    <div class="hidden padding main">
                         <div>
                             <input class="title">
+                        </div>
+                        <div class="sticky">
+                            <a href="javascript:void(0);" class="cool-button" id="save">保存</a>
+                            <a href="javascript:void(0);" class="cool-button" id="delete">删除</a>
                         </div>
                         <div>
                             <div id="standalone-container">
@@ -81,6 +94,9 @@ if (!hasLoggedIn()) {
                                         <button class="ql-image"></button>
                                         <button class="ql-video"></button>
                                         <button class="ql-formula"></button>
+                                        <button class="ql-record">
+                                            <svg t="1593679892848" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1128" width="18" height="18"><path class="ql-even ql-stroke ql-fill" d="M512 938.666667C276.352 938.666667 85.333333 747.648 85.333333 512S276.352 85.333333 512 85.333333s426.666667 191.018667 426.666667 426.666667-191.018667 426.666667-426.666667 426.666667z m0-85.333334a341.333333 341.333333 0 1 0 0-682.666666 341.333333 341.333333 0 0 0 0 682.666666z m0-213.333333a128 128 0 1 1 0-256 128 128 0 0 1 0 256z" p-id="1129"></path></svg>
+                                        </button>
                                     </span>
                                     <span class="ql-formats">
                                         <button class="ql-clean"></button>

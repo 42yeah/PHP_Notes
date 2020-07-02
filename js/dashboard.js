@@ -71,8 +71,56 @@ function renderNote(id) {
         id: id
     })).then(json => {
         console.log(json);
-        document.querySelector(".title").value = json.data[2];
+        const missing = document.querySelector(".missing");
+        missing.classList.add("hidden");
+        const main = document.querySelector(".main");
+        main.classList.remove("hidden");
+        const title = document.querySelector(".title");
+        title.value = json.data[2];
+        quill.setContents(json.data[6]);
+        title.onchange = () => {
+            const data = {
+                id: id,
+                title: title.value
+            };
+            request(3, JSON.stringify(data)).then(json => {
+                if (json.state == "error") {
+                    console.log(json);
+                    return;
+                }
+                syncNoteList();
+            });
+        };
+        document.querySelector("#delete").onclick = () => {
+            deleteNote(id);
+            missing.classList.remove("hidden");
+            main.classList.add("hidden");
+        };
+        document.querySelector("#save").onclick = () => {
+            save(id);
+        };
     });
+}
+
+function deleteNote(id) {
+    request(4, JSON.stringify({ id })).then(json => {
+        console.log(json);
+        if (json.state != "success") {
+            console.log(json);
+            return;
+        }
+        syncNoteList();
+    })
+}
+
+function save(id) {
+    request(5, JSON.stringify({
+        id: id,
+        note: quill.getContents()
+    })).then(json => {
+        console.log(json);
+        aussuringGreenTitle();
+    })
 }
 
 function selectNode(e) {
@@ -87,6 +135,7 @@ function selectNode(e) {
 
 function main() {
     syncNoteList();
+
     const quill = new Quill('#editor-container', {
         modules: {
             formula: true,
@@ -96,7 +145,43 @@ function main() {
         placeholder: '写点儿啥...',
         theme: 'snow'
     });
+    const toolbar = quill.getModule("toolbar");
+    toolbar.addHandler("omega", () => {
+        console.log("omega");
+    });
+    document.querySelector(".ql-record").addEventListener("click", () => {
+        let range = quill.getSelection();
+        if (range) {
+            quill.insertText(range.index, "Ω");
+        }
+    });
     window.quill = quill;
 }
 
+function aussuringGreenTitle() {
+    const title = document.querySelector(".title");
+    title.style.color = "#329255";
+    setTimeout(() => {
+        title.style.color = "black";
+    }, 150);
+}
+
+function logOut() {
+    document.cookie = "PHPSESSID=";
+    window.location.href = "/login.php";
+}
+
+window.onkeydown = (e) => {
+    if ((e.key == "s" && e.ctrlKey) ||
+        (e.key == "s" && e.metaKey)) {
+        e.preventDefault();
+
+        const selected = document.querySelector(".selected");
+        if (selected) {
+            save(+selected.getAttribute("note-id"));
+        }
+    }
+};
+
 window.addEventListener("load", main);
+

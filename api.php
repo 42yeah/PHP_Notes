@@ -53,7 +53,7 @@ function appendNote() {
 
 function getNoteContent() {
     if (!hasLoggedIn()) { emitError("not logged in"); }
-    if (!post("data")) { emitError("no request"); }
+    if (!post("data")) { emitError("no request data"); }
     $data = json_decode(post("data"), true);
     $conn = new mysqli("localhost", "root", "", "notes");
     $stmt = $conn->prepare("SELECT * FROM notes a INNER JOIN note_content b ON a.blobId=b.id WHERE a.id=? AND owner=?");
@@ -65,13 +65,62 @@ function getNoteContent() {
         emitError("no data found");
     }
     $row = $rows[0];
+    $row[6] = json_decode($row[6], true);
     success($row);
+}
+
+function changeTitle() {
+    if (!hasLoggedIn()) { emitError("not logged in"); }
+    if (!post("data")) { emitError("no request data"); }
+    $data = json_decode(post("data"), true);
+    $conn = new mysqli("localhost", "root", "", "notes");
+    $stmt = $conn->prepare("UPDATE notes SET title=? WHERE id=? AND owner=?");
+    $sessionId = $_SESSION["id"];
+    $stmt->bind_param("sii", $data["title"], $data["id"], $sessionId);
+    $stmt->execute();
+    success($data);
+}
+
+function deleteNote() {
+    if (!hasLoggedIn()) { emitError("not logged in"); }
+    if (!post("data")) { emitError("no request data"); }
+    $data = json_decode(post("data"), true);
+    $conn = new mysqli("localhost", "root", "", "notes");
+    $stmt = $conn->prepare("DELETE FROM notes WHERE id=? AND owner=?");
+    $sessionId = $_SESSION["id"];
+    $stmt->bind_param("ii", $data["id"], $sessionId);
+    $stmt->execute();
+    success($data);
+}
+
+function saveNote() {
+    if (!hasLoggedIn()) { emitError("not logged in"); }
+    if (!post("data")) { emitError("no request data"); }
+    $data = json_decode(post("data"), true);
+    $conn = new mysqli("localhost", "root", "", "notes");
+    $stmt = $conn->prepare("SELECT blobId FROM notes WHERE id=? AND owner=?");
+    $sessionId = $_SESSION["id"];
+    $stmt->bind_param("ii", $data["id"], $sessionId);
+    $stmt->execute();
+    $blobId = $stmt->get_result()->fetch_all();
+    if (count($blobId) <= 0) {
+        emitError("could not find such a note");
+    }
+    $blobId = $blobId[0][0];
+    $stmt = $conn->prepare("UPDATE note_content SET data=? WHERE id=?");
+    $noteData = json_encode($data["note"]);
+    $stmt->bind_param("si", $noteData, $blobId);
+    $stmt->execute();
+    success($blobId);
 }
 
 // Available actions:
 // 0: List notes of a user
 // 1: Append a new note to the note list
 // 2: Get the content of a particular note
+// 3: Change the title of a given note
+// 4: Delete given note
+// 5: Save the blob of given note
 
 switch (post("action")) {
 case 0:
@@ -84,5 +133,21 @@ case 1:
 
 case 2:
     getNoteContent();
+    break;
+
+case 3:
+    changeTitle();
+    break;
+
+case 4:
+    deleteNote();
+    break;
+
+case 5:
+    saveNote();
+    break;
+
+default:
+    emitError("unknown action");
     break;
 }

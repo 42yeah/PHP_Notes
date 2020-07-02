@@ -2,6 +2,12 @@
 
 require_once "common.php"; 
 
+if (hasLoggedIn()) {
+    alert("你已经登陆成功。");
+    header("Location: /dashboard.php");
+    return;
+}
+
 if (($username = post("username")) &&
     ($password = post("password", null, "未输入密码。"))) {
     $conn = new mysqli("localhost", "root", "", "notes");
