@@ -71,6 +71,7 @@ function renderNote(id) {
         id: id
     })).then(json => {
         console.log(json);
+        document.querySelector(".title").value = json.data[2];
     });
 }
 
@@ -86,6 +87,16 @@ function selectNode(e) {
 
 function main() {
     syncNoteList();
+    const quill = new Quill('#editor-container', {
+        modules: {
+            formula: true,
+            syntax: true,
+            toolbar: '#toolbar-container'
+        },
+        placeholder: '写点儿啥...',
+        theme: 'snow'
+    });
+    window.quill = quill;
 }
 
 window.addEventListener("load", main);

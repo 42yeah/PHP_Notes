@@ -1,7 +1,7 @@
 * {
     margin: 0;
     padding: 0;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
 }
 
 strong {
@@ -105,16 +105,25 @@ strong {
 }
 
 .sidebar {
-    width: 20%;
+    min-width: 20%;
     border-right: 1px dashed #aaa;
     display: flex;
     flex-direction: column;
 }
 
-.note-content {
+.note-content-wrapper {
     flex-grow: 100;
     background-image: url(/assets/paper.png);
     background-repeat: repeat;
+    display: flex;
+    flex-direction: column;
+}
+
+.note-content {
+    width: 100%;
+    flex-grow: 1;
+    height: 0;
+    overflow: scroll;
 }
 
 .legend {
@@ -175,7 +184,24 @@ strong {
 }
 
 .note-list {
-    flex-grow: 100;
+    flex-grow: 1;
     overflow-y: scroll;   
     height: 0;
+}
+
+.padding {
+    padding: 2em;
+}
+
+.title {
+    font-size: 2em;
+    background-color: transparent;
+    border: 0;
+    outline: 0;
+    border-bottom: 1px dotted #aeaeae;
+    width: 100%;
+}
+
+#standalone-container {
+    margin-top: 2em;
 }
