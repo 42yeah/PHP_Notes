@@ -1,4 +1,13 @@
-<?php require_once "common.php"; ?>
+<?php 
+
+require_once "common.php"; 
+
+if (!hasLoggedIn()) {
+    alert("你需要先登录。");
+    header("Location: /login.php");
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,12 +26,12 @@
                     <a class="banner-link" href="href="/dashboard.php">Notes | <strong>笔记管理</strong></a>
                 </div>
                 <div class="legend">新增笔记<a href="javascript:addNote()" class="float-right round-button"></a></div>
-                <div id="note-model" class="note-title hidden model">model</div>
+                <div id="note-model" class="note-elem hidden model">model</div>
                 <div class="note-list">
                 </div>
             </div>
             <div class="note-content">
-                
+                <h2 id="note-title"></h2>
             </div>
         </div>
     </div>

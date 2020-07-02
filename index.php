@@ -6,5 +6,7 @@ if (!hasLoggedIn()) {
     header("Location: /login.php");
     alert("你需要先登录。");
     exit(0);
+} else {
+    header("Location: /dashboard.php");
 }
 

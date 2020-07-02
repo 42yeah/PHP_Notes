@@ -26,7 +26,7 @@ function listNotes() {
     $stmt->bind_param("i", $_SESSION["id"]);
     $stmt->execute();
     $res = $stmt->get_result()->fetch_all();
-    success(json_encode($res));
+    success($res);
 }
 
 function appendNote() {
@@ -40,12 +40,38 @@ function appendNote() {
     $name = "未命名笔记 " . $newId;
     $stmt->bind_param("is", $_SESSION["id"], $name);
     $stmt->execute();
+    $stmt = $conn->prepare("INSERT INTO note_content (note) VALUES (?)");
+    $id = $conn->insert_id;
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $blobId = $conn->insert_id;
+    $stmt = $conn->prepare("UPDATE notes SET blobId=? WHERE id=?");
+    $stmt->bind_param("ii", $blobId, $id);
+    $stmt->execute();
     success(null);
 }
 
+function getNoteContent() {
+    if (!hasLoggedIn()) { emitError("not logged in"); }
+    if (!post("data")) { emitError("no request"); }
+    $data = json_decode(post("data"), true);
+    $conn = new mysqli("localhost", "root", "", "notes");
+    $stmt = $conn->prepare("SELECT * FROM notes a INNER JOIN note_content b ON a.blobId=b.id WHERE a.id=? AND owner=?");
+    $sessionId = $_SESSION["id"];
+    $stmt->bind_param("ii", $data["id"], $sessionId);
+    $stmt->execute();
+    $rows = $stmt->get_result()->fetch_all();
+    if (count($rows) <= 0) {
+        emitError("no data found");
+    }
+    $row = $rows[0];
+    success($row);
+}
+
 // Available actions:
-// 0: List notes of a particular user
+// 0: List notes of a user
 // 1: Append a new note to the note list
+// 2: Get the content of a particular note
 
 switch (post("action")) {
 case 0:
@@ -54,5 +80,9 @@ case 0:
 
 case 1:
     appendNote();
+    break;
+
+case 2:
+    getNoteContent();
     break;
 }

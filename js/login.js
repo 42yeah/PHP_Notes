@@ -4,6 +4,11 @@
         return cookie ? decodeURIComponent(cookie[1]) : null;
     }
 
+    function setCookie(key, value) {
+        let oneMonthLater = new Date(new Date().getTime() + 1000 * 2678400);
+        document.cookie = key + "=" + value + ";expires=" + oneMonthLater.toGMTString();
+    }
+
     function main() {
         let remember = document.querySelector("#remember");
         let fields = document.querySelectorAll("input:not([name='captcha'])");
@@ -16,7 +21,7 @@
             }
             field.addEventListener("change", () => {
                 if (remember.checked) {
-                    document.cookie = field.name + "=" + field.value;
+                    setCookie(field.name, field.value);
                 }
             });
         }
@@ -31,7 +36,7 @@
                     if (fields[i].type == "checkbox") {
                         value = fields[i].checked ? "on" : "";
                     }
-                    document.cookie = fields[i].name + "=" + value;
+                    setCookie(fields[i].name, value);
                 }
             }
         });

@@ -107,6 +107,8 @@ strong {
 .sidebar {
     width: 20%;
     border-right: 1px dashed #aaa;
+    display: flex;
+    flex-direction: column;
 }
 
 .note-content {
@@ -150,24 +152,30 @@ strong {
     background-color: #33333333;
 }
 
-.note-title {
+.note-elem {
     color: #989898;
     cursor: pointer;
     user-select: none;
     margin: 0.1em 0 0.1em 0;
-    padding: 0.5em;
+    padding: 0.5em 1.0em;
     margin-right: 1em;
     border-top-right-radius: 20px;
     border-bottom-right-radius: 20px;
     transition: 0.3s all cubic-bezier(0.23, 1, 0.320, 1);
 }
 
-.note-title:not(.selected):hover {
+.note-elem:not(.selected):hover {
     background: #33333311;
 }
 
-.note-title.selected {
+.note-elem.selected {
     background: #33333322;
     color: black;
     font-weight: bold;
+}
+
+.note-list {
+    flex-grow: 100;
+    overflow-y: scroll;   
+    height: 0;
 }
