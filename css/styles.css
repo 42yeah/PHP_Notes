@@ -25,7 +25,8 @@ strong {
     border-bottom: 2px solid #777;
     font-size: 1em;
     margin-top: 1em;
-    min-width: 30vw;
+    min-width: 18vw;
+    max-width: 18vw;
 }
 
 .cool-input:hover {
@@ -229,3 +230,16 @@ strong {
     z-index: 100;
 }
 
+.search {
+    outline: 0;
+    border: 1px solid #bababa;
+    padding: 1em;
+    width: 92%;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+.search:hover, .search:active {
+    border: 1px solid #aaa;
+    color: black;
+}

@@ -36,7 +36,7 @@ function appendNote() {
     $stmt->bind_param("i", $_SESSION["id"]);
     $stmt->execute();
     $newId = +$stmt->get_result()->fetch_all()[0][0] + 1;
-    $stmt = $conn->prepare("INSERT INTO notes (owner, title) VALUES (?, ?)");
+    $stmt = $conn->prepare("INSERT INTO notes (owner, title, date) VALUES (?, ?, NOW())");
     $name = "未命名笔记 " . $newId;
     $stmt->bind_param("is", $_SESSION["id"], $name);
     $stmt->execute();
@@ -65,7 +65,7 @@ function getNoteContent() {
         emitError("no data found");
     }
     $row = $rows[0];
-    $row[6] = json_decode($row[6], true);
+    $row[7] = json_decode($row[7], true);
     success($row);
 }
 
@@ -114,6 +114,43 @@ function saveNote() {
     success($blobId);
 }
 
+function searchNotes() {
+    if (!hasLoggedIn()) { emitError("not logged in"); }
+    if (!post("data")) { emitError("no request data"); }
+    $data = json_decode(post("data"), true);
+    $conn = new mysqli("localhost", "root", "", "notes");
+    $terms = "%" . $data["terms"] . "%";
+    // Search for titles first
+    $sessionId = $_SESSION["id"];
+    $stmt = $conn->prepare("SELECT * FROM notes WHERE owner=? AND title LIKE ?");
+    $stmt->bind_param("is", $sessionId, $terms);
+    $stmt->execute();
+    $res = $stmt->get_result()->fetch_all();
+
+    // then date
+    $stmt = $conn->prepare("SELECT * FROM notes WHERE owner=? AND DATE_FORMAT(date, '%Y-%m-%d') LIKE ? OR DATE_FORMAT(date, '%Y/%m/%d') LIKE ?");
+    $stmt->bind_param("iss", $sessionId, $terms, $terms);
+    $stmt->execute();
+    $res = array_merge($res, $stmt->get_result()->fetch_all());
+
+    // then content
+    $stmt = $conn->prepare("SELECT * FROM notes a INNER JOIN note_content b ON a.blobId=b.id WHERE owner=? AND data LIKE ?");
+    $stmt->bind_param("is", $sessionId, $terms);
+    $stmt->execute();
+    $res = array_merge($res, $stmt->get_result()->fetch_all());
+
+    for ($i = 0; $i < count($res); $i++) {
+        for ($j = $i + 1; $j < count($res); $j++) {
+            if ($res[$i][0] == $res[$j][0]) {
+                $res = array_splice($res, $j, 1);
+                $j--;
+                continue;
+            }
+        }
+    }
+    success($res);
+}
+
 // Available actions:
 // 0: List notes of a user
 // 1: Append a new note to the note list
@@ -121,6 +158,7 @@ function saveNote() {
 // 3: Change the title of a given note
 // 4: Delete given note
 // 5: Save the blob of given note
+// 6: Search for notes
 
 switch (post("action")) {
 case 0:
@@ -145,6 +183,10 @@ case 4:
 
 case 5:
     saveNote();
+    break;
+
+case 6:
+    searchNotes();
     break;
 
 default:

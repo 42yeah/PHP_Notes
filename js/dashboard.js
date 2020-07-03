@@ -27,10 +27,10 @@ function request(action, data) {
 function addNote() {
     request(1, null).then(json => {
         if (json.state == "error") {
-            console.log(json);
+            // console.log(json);
             return;
         }
-        console.log(json);
+        // console.log(json);
         syncNoteList();
     });
 }
@@ -38,46 +38,50 @@ function addNote() {
 function syncNoteList() {
     request(0, null).then(json => {
         if (json.state == "error") {
-            console.log(json);
+            // console.log(json);
             return;
         }
-        console.log(json);
-        const model = document.querySelector("#note-model");
-        const listElem = document.querySelector(".note-list");
-        const selected = document.querySelector(".selected");
-        let selectedId = -1;
-        if (selected) {
-            selectedId = selected.getAttribute("note-id");
-        }
-        listElem.innerHTML = "";
+        // console.log(json);
         const list = json.data;
-        for (let i = 0; i < list.length; i++) {
-            const elem = model.cloneNode();
-            elem.classList.remove("hidden");
-            elem.classList.remove("model");
-            elem.setAttribute("note-id", list[i][0]);
-            elem.innerText = list[i][2];
-            elem.addEventListener("click", selectNode);
-            if (list[i][0] == selectedId) {
-                elem.classList.add("selected");
-            }
-            listElem.appendChild(elem);
-        }
+        renderList(list);
     });
+}
+
+function renderList(list) {
+    const model = document.querySelector("#note-model");
+    const listElem = document.querySelector(".note-list");
+    const selected = document.querySelector(".selected");
+    let selectedId = -1;
+    if (selected) {
+        selectedId = selected.getAttribute("note-id");
+    }
+    listElem.innerHTML = "";
+    for (let i = 0; i < list.length; i++) {
+        const elem = model.cloneNode();
+        elem.classList.remove("hidden");
+        elem.classList.remove("model");
+        elem.setAttribute("note-id", list[i][0]);
+        elem.innerText = list[i][2];
+        elem.addEventListener("click", selectNode);
+        if (list[i][0] == selectedId) {
+            elem.classList.add("selected");
+        }
+        listElem.appendChild(elem);
+    }
 }
 
 function renderNote(id) {
     request(2, JSON.stringify({
         id: id
     })).then(json => {
-        console.log(json);
+        // console.log(json);
         const missing = document.querySelector(".missing");
         missing.classList.add("hidden");
         const main = document.querySelector(".main");
         main.classList.remove("hidden");
         const title = document.querySelector(".title");
         title.value = json.data[2];
-        quill.setContents(json.data[6]);
+        quill.setContents(json.data[7]);
         title.onchange = () => {
             const data = {
                 id: id,
@@ -85,7 +89,7 @@ function renderNote(id) {
             };
             request(3, JSON.stringify(data)).then(json => {
                 if (json.state == "error") {
-                    console.log(json);
+                    // console.log(json);
                     return;
                 }
                 syncNoteList();
@@ -104,9 +108,9 @@ function renderNote(id) {
 
 function deleteNote(id) {
     request(4, JSON.stringify({ id })).then(json => {
-        console.log(json);
+        // console.log(json);
         if (json.state != "success") {
-            console.log(json);
+            // console.log(json);
             return;
         }
         syncNoteList();
@@ -118,7 +122,7 @@ function save(id) {
         id: id,
         note: quill.getContents()
     })).then(json => {
-        console.log(json);
+        // console.log(json);
         aussuringGreenTitle();
     })
 }
@@ -170,6 +174,19 @@ function updateRecordSeconds(elem) {
     }
 }
 
+function search() {
+    const terms = document.querySelector(".search").value;
+    if (terms == "") {
+        syncNoteList();
+        return;
+    }
+    request(6, JSON.stringify({
+        terms
+    })).then(json => {
+        renderList(json.data);
+    });
+}
+
 function main() {
     let BlockEmbed = Quill.import("blots/block/embed");
 
@@ -179,15 +196,6 @@ function main() {
             node.src = value;
             node.innerText = "";
             window.v = value;
-            return node;
-        }
-    }
-
-    class Button extends BlockEmbed {
-        static create(value) {
-            let node = super.create();
-            node.innerHTML = value;
-            node.classList.add("cool-button");
             return node;
         }
     }
@@ -267,6 +275,7 @@ function main() {
         }
     });
     window.quill = quill;
+    document.querySelector(".search").addEventListener("change", search);
 }
 
 function aussuringGreenTitle() {

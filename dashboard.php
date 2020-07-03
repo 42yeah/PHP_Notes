@@ -32,6 +32,9 @@ if (!hasLoggedIn()) {
                     <?php renderAlerts(); ?>
                     你好，<?php echo $_SESSION["username"]; ?>！<a href="javascript:logOut();" class="cool-link">登出</a>
                 </div>
+                <div class="legend">
+                    <input class="search" placeholder="搜索（日期/内容/标题）...">
+                </div>
                 <div class="legend">新增笔记<a href="javascript:addNote()" class="float-right round-button"></a></div>
                 <div id="note-model" class="note-elem hidden model">model</div>
                 <div class="note-list">
