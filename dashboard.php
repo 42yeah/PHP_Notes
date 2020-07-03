@@ -96,6 +96,7 @@ if (!hasLoggedIn()) {
                                         <button class="ql-formula"></button>
                                         <button class="ql-record">
                                             <svg t="1593679892848" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1128" width="18" height="18"><path class="ql-even ql-stroke ql-fill" d="M512 938.666667C276.352 938.666667 85.333333 747.648 85.333333 512S276.352 85.333333 512 85.333333s426.666667 191.018667 426.666667 426.666667-191.018667 426.666667-426.666667 426.666667z m0-85.333334a341.333333 341.333333 0 1 0 0-682.666666 341.333333 341.333333 0 0 0 0 682.666666z m0-213.333333a128 128 0 1 1 0-256 128 128 0 0 1 0 256z" p-id="1129"></path></svg>
+                                            <div class="hidden">0:0</div>
                                         </button>
                                     </span>
                                     <span class="ql-formats">
@@ -113,5 +114,6 @@ if (!hasLoggedIn()) {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
     <script src="js/quill.min.js"></script>
+    <script src="js/recorder.js"></script>
 </body>
 </html>

@@ -133,7 +133,92 @@ function selectNode(e) {
     renderNote(+target.getAttribute("note-id"));
 }
 
+let recording = false;
+let gumStream = null;
+let recordSession = null;
+let millis = 0;
+
+function startRecording() {
+    const constraints = {
+        audio: true,
+        video: false
+    } ;
+    navigator.mediaDevices.getUserMedia(constraints).then(stream => {
+        gumStream = stream;
+        let ctx = new AudioContext();
+        let input = ctx.createMediaStreamSource(stream);
+        recordSession = new Recorder(input, {
+            numChannels: 1
+        });
+        recordSession.record();
+    });
+}
+
+function stopRecording(insertBlob) {
+    recordSession.stop();
+    gumStream.getAudioTracks()[0].stop();
+    recordSession.exportWAV(insertBlob);
+}
+
+function updateRecordSeconds(elem) {
+    if (recording) {
+        millis += 1000;
+        let lapsed = new Date(millis);
+        let timeStr = lapsed.getMinutes() + ":" + lapsed.getSeconds();
+        elem.innerHTML = timeStr;
+        setTimeout(updateRecordSeconds, 1000, elem);
+    }
+}
+
 function main() {
+    let BlockEmbed = Quill.import("blots/block/embed");
+
+    class Source extends BlockEmbed {
+        static create(value) {
+            let node = super.create();
+            node.src = value;
+            node.innerText = "";
+            window.v = value;
+            return node;
+        }
+    }
+
+    class Button extends BlockEmbed {
+        static create(value) {
+            let node = super.create();
+            node.innerHTML = value;
+            node.classList.add("cool-button");
+            return node;
+        }
+    }
+
+    class Player extends BlockEmbed {
+        static create(value) {
+            let node = super.create();
+            node.setAttribute("controls", "controls");
+            node.setAttribute("autobuffer", "autobuffer");
+            node.innerText = "";
+            let source = Source.create(value);
+            node.appendChild(source);
+            return node;
+        }
+
+        static value(node) {
+            return node.firstChild.getAttribute("src");
+        }
+    }
+
+    Source.blotName = "source";
+    Source.tagName = "source";
+    Player.blotName = "player";
+    Player.tagName = "audio";
+    Player.allowedChildren = [ Source ];
+    Source.allowedChildren = [ Player ];
+    Quill.register(Source);
+    Quill.register(Player);
+    window.Source = Source;
+    window.Player = Player;
+
     syncNoteList();
 
     const quill = new Quill('#editor-container', {
@@ -146,13 +231,39 @@ function main() {
         theme: 'snow'
     });
     const toolbar = quill.getModule("toolbar");
-    toolbar.addHandler("omega", () => {
-        console.log("omega");
+    toolbar.addHandler("record", () => {
+        // console.log("omega");
     });
-    document.querySelector(".ql-record").addEventListener("click", () => {
+    let recordButton = document.querySelector(".ql-record");
+    let recordSvg = recordButton.querySelector("svg");
+    let recordTime = recordButton.querySelector("div");
+    recordButton.addEventListener("click", () => {
         let range = quill.getSelection();
         if (range) {
-            quill.insertText(range.index, "Ω");
+            // quill.insertText(range.index, "Ω");
+            recording = !recording;
+            if (recording) {
+                recordSvg.classList.add("hidden");
+                recordTime.classList.remove("hidden");
+                startRecording();
+                updateRecordSeconds(recordTime);
+            } else {
+                recordSvg.classList.remove("hidden");
+                recordTime.classList.add("hidden");
+                millis = 0;
+
+                function insertBlob(blob) {
+                    // let url = URL.createObjectURL(blob);
+                    let reader = new FileReader();
+                    reader.readAsDataURL(blob);
+                    reader.onloadend = () => {
+                        let data = reader.result;
+                        quill.insertEmbed(range.index, "player", data);
+                    };
+                }
+
+                stopRecording(insertBlob);
+            }
         }
     });
     window.quill = quill;
