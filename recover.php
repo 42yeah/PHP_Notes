@@ -18,6 +18,7 @@ if (hasLoggedIn()) {
     <title>找回密码 | Notes</title>
     <link rel="stylesheet" href="css/styles.css">
     <script src="js/common.js"></script>
+    <script src="js/recover.js"></script>
 </head>
 <body>
     <div class="container">
@@ -29,11 +30,11 @@ if (!isset($_SESSION["recoverSteps"]) || isset($_GET["restart"])) {
     $_SESSION["recoverSteps"] = 0;
 }
 if (isset($_GET["restart"])) {
-    header("Location: /recover.php");
+    echo "<script>redirect(\"/recover.php\");</script>";
 }
 
 $hasUser = post("username", false);
-$conn = new mysqli("localhost", "root", "", "notes");
+$conn = new mysqli("127.0.0.1", "root", "", "notes");
 $id = -1;
 if ($hasUser) {
     $stmt = $conn->prepare("SELECT id FROM users WHERE username=?");
@@ -121,7 +122,7 @@ if (post("password")) {
         alert("密码修改完成。");
         unset($_SESSION["recoverId"]);
         unset($_SESSION["recoverSteps"]);
-        header("Location: /login.php");
+        echo "<script>redirect(\"/login.php\");</script>";
         return;
     }
 }

@@ -10,7 +10,7 @@ if (hasLoggedIn()) {
 
 if (($username = post("username")) &&
     ($password = post("password", null, "未输入密码。"))) {
-    $conn = new mysqli("localhost", "root", "", "notes");
+    $conn = new mysqli("127.0.0.1", "root", "", "notes");
     $stmt = $conn->prepare("SELECT * FROM users WHERE username=? AND password=?");
     $stmt->bind_param("ss", $username, $password);
     $stmt->execute();

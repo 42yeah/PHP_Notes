@@ -23,7 +23,7 @@ if (($username = post("username")) &&
         $valid = false;
     }
     if ($valid) {
-        $conn = new mysqli("localhost", "root", "", "notes");
+        $conn = new mysqli("127.0.0.1", "root", "", "notes");
         $stmt = $conn->prepare("SELECT * FROM users WHERE username=?");
         $stmt->bind_param("s", $username);
         $stmt->execute();

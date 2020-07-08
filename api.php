@@ -21,7 +21,7 @@ if (!is_numeric(post("action"))) {
 
 function listNotes() {
     if (!hasLoggedIn()) { emitError("not logged in"); }
-    $conn = new mysqli("localhost", "root", "", "notes");
+    $conn = new mysqli("127.0.0.1", "root", "", "notes");
     $stmt = $conn->prepare("SELECT * FROM notes WHERE owner=?");
     $stmt->bind_param("i", $_SESSION["id"]);
     $stmt->execute();
@@ -31,7 +31,7 @@ function listNotes() {
 
 function appendNote() {
     if (!hasLoggedIn()) { emitError("not logged in"); }
-    $conn = new mysqli("localhost", "root", "", "notes");
+    $conn = new mysqli("127.0.0.1", "root", "", "notes");
     $stmt = $conn->prepare("SELECT COUNT(*) FROM notes WHERE OWNER=?");
     $stmt->bind_param("i", $_SESSION["id"]);
     $stmt->execute();
@@ -55,7 +55,7 @@ function getNoteContent() {
     if (!hasLoggedIn()) { emitError("not logged in"); }
     if (!post("data")) { emitError("no request data"); }
     $data = json_decode(post("data"), true);
-    $conn = new mysqli("localhost", "root", "", "notes");
+    $conn = new mysqli("127.0.0.1", "root", "", "notes");
     $stmt = $conn->prepare("SELECT * FROM notes a INNER JOIN note_content b ON a.blobId=b.id WHERE a.id=? AND owner=?");
     $sessionId = $_SESSION["id"];
     $stmt->bind_param("ii", $data["id"], $sessionId);
@@ -73,7 +73,7 @@ function changeTitle() {
     if (!hasLoggedIn()) { emitError("not logged in"); }
     if (!post("data")) { emitError("no request data"); }
     $data = json_decode(post("data"), true);
-    $conn = new mysqli("localhost", "root", "", "notes");
+    $conn = new mysqli("127.0.0.1", "root", "", "notes");
     $stmt = $conn->prepare("UPDATE notes SET title=? WHERE id=? AND owner=?");
     $sessionId = $_SESSION["id"];
     $stmt->bind_param("sii", $data["title"], $data["id"], $sessionId);
@@ -85,7 +85,7 @@ function deleteNote() {
     if (!hasLoggedIn()) { emitError("not logged in"); }
     if (!post("data")) { emitError("no request data"); }
     $data = json_decode(post("data"), true);
-    $conn = new mysqli("localhost", "root", "", "notes");
+    $conn = new mysqli("127.0.0.1", "root", "", "notes");
     $stmt = $conn->prepare("DELETE FROM notes WHERE id=? AND owner=?");
     $sessionId = $_SESSION["id"];
     $stmt->bind_param("ii", $data["id"], $sessionId);
@@ -97,7 +97,7 @@ function saveNote() {
     if (!hasLoggedIn()) { emitError("not logged in"); }
     if (!post("data")) { emitError("no request data"); }
     $data = json_decode(post("data"), true);
-    $conn = new mysqli("localhost", "root", "", "notes");
+    $conn = new mysqli("127.0.0.1", "root", "", "notes");
     $stmt = $conn->prepare("SELECT blobId FROM notes WHERE id=? AND owner=?");
     $sessionId = $_SESSION["id"];
     $stmt->bind_param("ii", $data["id"], $sessionId);
@@ -118,7 +118,7 @@ function searchNotes() {
     if (!hasLoggedIn()) { emitError("not logged in"); }
     if (!post("data")) { emitError("no request data"); }
     $data = json_decode(post("data"), true);
-    $conn = new mysqli("localhost", "root", "", "notes");
+    $conn = new mysqli("127.0.0.1", "root", "", "notes");
     $terms = "%" . $data["terms"] . "%";
     // Search for titles first
     $sessionId = $_SESSION["id"];

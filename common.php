@@ -32,7 +32,7 @@ function renderAlerts() {
 }
 
 function post($key, $otherwise = null, $warn = null) {
-    if (isset($_POST[$key]) && $_POST[$key] !== null) {
+    if (isset($_POST[$key]) && $_POST[$key] !== null && $_POST[$key] !== "") {
         return $_POST[$key];
     }
     if ($warn) {
