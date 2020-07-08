@@ -288,7 +288,7 @@ function aussuringGreenTitle() {
 
 function logOut() {
     document.cookie = "PHPSESSID=";
-    window.location.href = "/login.php";
+    window.location.href = "/index.php";
 }
 
 window.onkeydown = (e) => {

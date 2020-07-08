@@ -10,6 +10,7 @@ strong {
 }
 
 .container {
+    background-color: transparent;
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -242,4 +243,72 @@ strong {
 .search:hover, .search:active {
     border: 1px solid #aaa;
     color: black;
+}
+
+@keyframes blur-it {
+    0% {
+        filter: blur(0);
+        opacity: 1;
+    }
+
+    100% {
+        filter: blur(100px) saturate(0) brightness(10);
+        opacity: 0;
+    }
+}
+
+@keyframes reverse-blur {
+    0% {
+        filter: blur(100px) saturate(0) brightness(10);
+        opacity: 0;
+    }
+
+    100% {
+        filter: blur(0);
+        opacity: 1;
+    }
+}
+
+.blurry {
+    position: absolute;
+    left: 0;
+    top: 0;
+    overflow: hidden;
+    background-image: url(/assets/kyle-glenn-kvIAk3J_A1c-unsplash.jpg);
+    background-repeat: round;
+    animation: blur-it 4s forwards 2s;
+    z-index: 10;
+    width: 100%;
+    pointer-events: none;
+}
+
+.reverse-blurry {
+    filter: blur(100px) saturate(0) brightness(10);
+    animation: reverse-blur 1s forwards 1s;
+}
+
+.carousel {
+    position: relative;
+    border: 1px solid #aeaeae;
+    border-radius: 5px;
+    width: 100%;
+    height: 15em;
+    margin-top: 1em;
+    overflow: hidden;
+}
+
+.carousel-swooper {
+    transition: all cubic-bezier(1, 0, 0, 1) 0.5s;
+    width: 100%;
+    height: 100%;
+}
+
+.carousel-item {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 4.0em;
+    font-weight: bolder;
 }
